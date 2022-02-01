@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>1</title>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link href="css/styles.css" rel="stylesheet">
+	<script src="js/vue.js"></script>
+</head>
+<body>
+	<div class="wrapper">
+		<div class="sample">
+			<form @submit="sendForm($event)" v-if="!isFormDone">
+
+				<div class="form-group" v-for="field, key in fields">
+					<label>{{ key }}</label>
+					<input type="text" v-model.trim="fields[key]" class="form-control">
+				</div>
+				
+				<div class="form-group">
+					<label>Guests</label>&nbsp;
+					<input type="button" @click="addGuest" class="btn btn-primary" value="+">
+				</div>
+				
+					<div class="form-group" v-for="(guest, i) in guests" >
+						<label>Guest {{ i + 1 }}</label> <span class="btn btn-danger" @click="removeGuest(i)">x</span><br><br>
+						<input type="text" v-model.trim="guests[i]" class="form-control">
+					</div>
+
+				<hr>
+				<button class="btn btn-success" :disabled="!checkValues">Send Data</button>
+			</form>
+
+			<div v-if="isFormDone">
+				<h2>All done!</h2>
+				<table class="table table-bordered">
+					<tr v-for="field, key in fields" >
+						<td>{{ key }}</td>
+						<td>{{ field }}</td>
+					</tr>
+					<tr v-if="filterGuests">
+						<td>Guests</td>
+						<td>
+							<div v-for="guest in guests">{{ guest }}</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<script>
+
+		Vue.createApp({
+			data: () => ({
+				fields:{"Email":"","Phone":"","First Name":"","Last Name":""},
+				guests:[],
+				isGuests: false,
+				isFormDone: false
+			}),
+			computed: {
+				checkValues() {
+					return Object.values(this.fields).every(val => val !== '');
+				},
+				filterGuests() {
+					return this.guests.length ? this.isGuests = true : this.isGuests = false
+				}
+			},
+			methods: {
+				sendForm($event) {
+					$event.preventDefault();
+
+					this.isFormDone = true;
+					
+					this.guests = this.guests.filter(function (el) {
+						return el != "";
+					});
+				},
+				addGuest() {
+					this.guests.push("");
+				},
+				removeGuest(i) {
+					this.guests.splice(i, 1);
+				},
+			},
+		}).mount('.sample');
+
+	</script>
+</body>
+</html>

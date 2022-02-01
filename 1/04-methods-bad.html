@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Урок 1</title>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link href="css/styles.css" rel="stylesheet">
+	<script src="js/vue.js"></script>
+</head>
+<body>
+	<div class="wrapper">
+		<div class="sample">
+			FN: <input type="text" v-model.trim="firstName"> <br>
+			LN: <input type="text" v-model.trim="lastName">
+			<hr>
+			<h2>Hello, {{fullName()}}</h2>
+			<!-- Плохой способ работы с данными через methods. Из-за вывода через функцию происходит перерендер при измененеиях в компоненте. Нужно через computed делать -->
+			<hr>
+			<button type="button" class="btn btn-primary" @click="showAlert = !showAlert">Toggle</button>
+			<div class="alert alert-danger" v-show="showAlert">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero minima minus, architecto, voluptate molestias numquam tempora delectus error cumque tenetur iste facilis nihil a accusantium dolorem et ratione ipsa eveniet!</div>
+		</div>
+	</div>
+	<script>
+
+		/*v-model ->
+			v-bind:value="firstName"
+			v-on:input="firstName = $event.target.value"
+
+		node.value = app.firstName
+		node.addEventListener('input', function($event){
+			// lazy = меняет событие input тупо на change
+			$event.target.value = $event.target.value.trim() // .trim
+			// firstName = $event.target.value
+		})*/
+		
+        let app = Vue.createApp({
+            data: () => ({
+				firstName:'',
+				lastName:'',
+				showAlert: false
+			}),
+			methods: {
+				fullName() {
+					return `${this.firstName} ${this.lastName}`
+				}
+			}
+        })
+
+		app.mount('.sample');
+		
+	</script>
+</body>
+</html>
