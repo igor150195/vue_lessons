@@ -17,12 +17,23 @@
 					<div class="progress-bar"></div>
 				</div>
 				<div>
-					<div class="form-group" v-for="(item, key) in info">
-						<label>{{item}}</label>
-						<input type="text" v-model="info[key].value" class="form-control">
+					<div class="form-group" v-for="(field, i) in info">
+						<label><b>{{field.name}}</b></label>
+						<span v-if="field.activated"
+								class="fa" 
+								:class="field.valid ? 
+										'fa-check-circle text-success' : 
+										'fa-exclamation-circle text-danger'"></span>
+						<input type="text" 
+							class="form-control" 
+							:value="field.value" 
+							@input="onInput($event.target.value, i)">
 					</div>
+					<pre>
+						{{info}}
+					</pre>
 				</div>
-				<button class="btn btn-primary" :disabled="!checkValues">
+				<button class="btn btn-primary" :disabled="!isFormValid">
 					Send Data
 				</button>
 			</form>
@@ -40,6 +51,7 @@
 		
 		Vue.createApp({
 			data: () => ({
+				isFormValid: false,
 				info: [
 					{
 						name: 'Name',
@@ -69,10 +81,34 @@
 				]
 			}),
 			computed: {
-				checkValues() {
-					return Object.values(this.info).every(val => val.name !== '');
+				fieldsDone() {
+					//return Object.values(this.info).every(val => val.name !== '');
+					return // [0, this.info.length]; this.info.reduce(field) или обычный for или filter, every
+				},
+				formReady(){
+					return fieldsDone === this.info.length;
+				},
+				progressStyles(){
+					return {
+						width: 0 // завязать на fieldsDone
+					}
 				}
 			},
+			methods: {
+				onInput(value, i) {
+					let field = this.info[i];
+					field.value = value.trim();
+					field.activated = true;
+					field.valid = field.pattern.test(field.value);
+				}
+			},
+			created() {
+				return this.info.forEach(field =>  {
+					field.activated = false,
+					field.valid = false
+				});
+				
+			}
 		}).mount('.sample');
 	</script>
 </body>

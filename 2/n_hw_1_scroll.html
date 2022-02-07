@@ -19,7 +19,7 @@
 <body>
 	<div class="wrapper">
 		<div class="sample">
-			<form @submit="sendForm($event)" v-if="!isFormDone">
+			<form @submit.prevent="sendForm" v-if="!isFormDone">
 				<div class="content alert alert-info" v-on:scroll="scrollEvent" ref="scroll">
 					<p>This text no one reads. This text no one reads. This text no one reads.</p>
 					<p>This text no one reads. This text no one reads. This text no one reads.</p>
@@ -88,7 +88,7 @@
 						<td>Get spam</td>
 						<td>{{ getSpam ? "yes" : "no" }}</td>
 					</tr>
-					<tr>
+					<tr v-if="spamType">
 						<td>Spam type</td>
 						<td>{{ spamType }}</td>
 					</tr>
@@ -100,12 +100,12 @@
 		
 		Vue.createApp({
 			data: () => ({
-				testField: "yes",
 				agree: false,
 				getSpam: false,
-				spamType: 'email',
 				checkScroll: false,
-				isFormDone: false
+				isFormDone: false,
+				testField: "yes",
+				spamType: 'email'
 			}),
 			computed: {
 				
